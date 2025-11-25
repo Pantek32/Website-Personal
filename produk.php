@@ -1,107 +1,224 @@
 <?php
-require "koneksi.php";
+    require "session.php";
+    require "../koneksi.php";
 
-// Ambil keyword pencarian
-$cari = isset($_GET['cari']) ? $_GET['cari'] : '';
+    $query = mysqli_query($mysqli, "SELECT a.*, b.nama AS nama_kategori FROM produk a JOIN kategori b ON a.kategori_id=b.id");
+    $jumlahProduk = mysqli_num_rows($query);
 
-// Ambil kategori jika ada (walau sidebar dihapus, tetap aman)
-$kategoriDipilih = isset($_GET['kategori']) ? $_GET['kategori'] : '';
+    $queryKategori = mysqli_query($mysqli, "SELECT * FROM kategori");
 
-// Query produk
-$queryProduk = "SELECT * FROM produk WHERE 1=1";
-
-if (!empty($kategoriDipilih)) {
-    $queryProduk .= " AND kategori='$kategoriDipilih'";
-}
-
-if (!empty($cari)) {
-    $queryProduk .= " AND nama LIKE '%$cari%'";
-}
-
-$queryProduk .= " ORDER BY id DESC";
-$produk = mysqli_query($mysqli, $queryProduk);
+    function generateRandomString($length = 10){
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[rand(0, $charactersLength - 1)];
+        }
+        return $randomString;
+    }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Produk | Dayak Aksesoris</title>
-<link rel="stylesheet" href="bootstrap/bootstrap-5.0.2-dist/css/bootstrap.min.css">
-<link rel="stylesheet" href="fontawesome/css/all.min.css">
-<link rel="stylesheet" href="css/style.css">
-<style>
-.product-card {
-    border-radius: 12px;
-    transition: .3s;
-}
-.product-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-}
-.product-img {
-    height: 220px;
-    object-fit: cover;
-    border-radius: 12px 12px 0 0;
-}
-.product-title {
-    font-weight: bold;
-    font-size: 1.1rem;
-}
-.product-price {
-    color: #a52a2a;
-    font-weight: bold;
-}
-</style>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA Compatible" content ="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../bootstrap/bootstrap-5.0.2-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../fontawesome/css/fontawesome.min.css">
 </head>
+
+<style>
+    .no-decoration{
+        text-decoration: none;
+    }
+    
+    form div{
+        margin-bottom: 10px;
+    }
+</style>
+
 <body>
+    <?php require "navbar.php";?>
+    <div class="container mt-5">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item active" aria-current="page">
+                    <a href="../adminpanel" class="no-decoration text-muted">
+                        <i class="fas fa-home"></i> Home
+                    </a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">
+                    Produk
+                </li>
+            </ol>
+        </nav>
 
-<?php require "navbar.php"; ?>
+        <!-- tambah produk-->
+        <div class="my-5 col-12 col-md-6">
+            <h3>Tambah Produk</h3>
 
-<!-- Banner -->
-<div class="container-fluid banner-produk d-flex align-items-center">
-    <div class="container">
-        <h1 class="text-white text-center"></h1>
-    </div>
-</div>
-
-<!-- Produk -->
-<div class="container mt-5 mb-5">
-
-    <!-- Pencarian -->
-    <form method="GET" class="mb-4">
-        <div class="input-group">
-            <input type="text" name="cari" class="form-control" placeholder="Cari produk..."
-                value="<?= isset($_GET['cari']) ? $_GET['cari'] : '' ?>">
-            <button class="btn btn-dark" type="submit">Cari</button>
-        </div>
-    </form>
-
-    <div class="row g-4 justify-content-center">
-
-        <?php if (mysqli_num_rows($produk) == 0) { ?>
-            <div class="col-12 text-center">
-                <h5 class="text-muted">Produk tidak ditemukan 😢</h5>
-            </div>
-        <?php } ?>
-
-        <?php while($row = mysqli_fetch_array($produk)){ ?>
-        <div class="col-sm-6 col-md-4 col-lg-3 mb-3">
-            <div class="card product-card">
-                <img src="image/<?= $row['foto'] ?>" class="product-img" alt="<?= $row['nama'] ?>">
-                <div class="card-body text-center">
-                    <div class="product-title"><?= $row['nama'] ?></div>
-                    <div class="product-price">Rp <?= number_format($row['harga'],0,',','.') ?></div>
-                    <a href="produk-detail.php?p=<?= $row['id'] ?>" class="btn btn-dark mt-2 w-100">Detail</a>
+            <form action="" method="post" enctype="multipart/form-data">
+                <div>
+                    <label for="nama">Nama</label>
+                    <input type="text" id="nama" name="nama" class="form-control" autocomplete="off" required>
                 </div>
+                <div>
+                    <label for="kategori">Kategori</label>
+                    <select name="kategori" id="kategori" class="form-control" required>
+                        <option value="">Pilih Satu</option>
+                        <?php
+                            while($data=mysqli_fetch_array($queryKategori)){
+                        ?>
+                            <option value="<?php echo $data['id']; ?>"><?php echo $data['nama']; ?></option>
+                        <?php        
+                            }
+                        ?>
+                    </select>
+                </div>
+                <div>
+                    <label for="harga">Harga</label>
+                    <input type="number" class="form-control" name="harga" required>
+                </div>
+                <div>
+                    <label for="foto">Foto</label>
+                    <input type="file" name="foto" id="foto" class="form-control">
+                </div>
+                <div>
+                    <label for="detail">Detail</label>
+                    <textarea name="detail" id="detail" cols="30" rows="10" class="form-control"></textarea>
+                </div>
+                <div>
+                    <label for="ketersediaan_stok">Ketersediaan Stok</label>
+                    <select name="ketersediaan_stok" id="Ketersediaan Stok" class="form-control">
+                        <option value="tersedia">Tersedia</option>
+                        <option value="habis">Habis</option>
+                    </select>
+                </div>
+
+                <div>
+                    <button type="submit" class="btn btn-primary" name="simpan">Simpan</button>
+                </div>
+            </form>
+
+            <?php
+                if(isset($_POST['simpan'])){
+                    $nama = htmlspecialchars($_POST['nama']);
+                    $kategori = htmlspecialchars($_POST['kategori']);
+                    $harga = htmlspecialchars($_POST['harga']);
+                    $detail = htmlspecialchars($_POST['detail']);
+                    $ketersediaan_stok = htmlspecialchars($_POST['ketersediaan_stok']);
+
+                    $target_dir = "../image/";
+                    $nama_file = basename($_FILES["foto"]["name"]);
+                    $target_file = $target_dir . $nama_file;
+                    $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
+                    $image_size = $_FILES["foto"]["size"];
+                    $random_name = generateRandomString(20);
+                    $new_name = $random_name .".". $imageFileType;
+
+                    if($nama=='' || $kategori=='' || $harga==''){
+            ?>
+                        <div class="alert alert-warning mt-2" role="alert">
+                            Nama, ketgori serta harga wajib di isi
+                        </div>
+            <?php
+                    }
+                    else{
+                        if($nama_file!=''){
+                            if($image_size > 500000){
+            ?>
+                            <div class="alert alert-warning mt-2" role="alert">
+                                File tidak boleh lebih dari 5000kb
+                            </div>
+            <?php
+                            }
+                            else{
+                                if($imageFileType != 'jpg' && $imageFileType != 'png' && $imageFileType != 'gif'){
+            ?>
+                                    <div class="alert alert-warning mt-2" role="alert">
+                                        File tidak boleh menggunakan format selain jpg, png, gif
+                                    </div>
+            <?php                       
+                                }
+                                else{
+                                    if(move_uploaded_file($_FILES["foto"]["tmp_name"], $target_dir . $new_name));
+                                }
+                            }
+                        }
+
+                        // query insert to produk table
+                        $queryTambah = mysqli_query($mysqli, "INSERT INTO produk (kategori_id, nama, harga, foto, detail, ketersediaan_stok) VALUES ('$kategori', '$nama', '$harga', '$random_name', '$detail', '$ketersediaan_stok')");
+
+                        if($queryTambah){
+            ?>
+                            <div class="alert alert-primary mt-2" role="alert">
+                                Produk Berhasil Tersimpan
+                            </div>
+
+                            <meta http-equiv="refresh" content="2; url=produk.php" />
+            <?php                
+                        }
+                        else{
+                            echo mysqli_error($mysqli);
+                        }
+                    }
+                }
+            ?>
+        </div>
+
+        <div class="mt-3 mb-5">
+            <h2>List Produk</h2>
+
+            <div class="table-responsive mt-5">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>No.</th>
+                            <th>Nama</th>
+                            <th>Kategori</th>
+                            <th>Harga</th>
+                            <th>Ketersediaan Stok</th>
+                             <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                            if($jumlahProduk==0){
+                        ?>
+                            <tr>
+                                <td colspan=6 class="text-center">Data Produk Tidak Tersedia</td>
+                            </tr>
+                        <?php      
+                            }
+                            else{
+                                $jumlah = 1;
+                                while($data=mysqli_fetch_array($query)){
+                            ?>
+                                <tr>
+                                    <td><?php echo $jumlah; ?></td>
+                                    <td><?php echo $data['nama']; ?></td>
+                                    <td><?php echo $data['nama_kategori']; ?></td>
+                                    <td><?php echo $data['harga']; ?></td>
+                                    <td><?php echo $data['ketersediaan_stok']; ?></td>
+                                    <td>
+                                        <a href="produk-detail.php?=<?php echo $data['id']; ?>" class="btn btn-info"><i class="fas fa-search"></i></a>
+                                    </td>
+                                </tr>
+                            <?php
+                                $jumlah++;
+                                }
+                            }
+                        ?>
+                    </tbody>
+                </table>
             </div>
         </div>
-        <?php } ?>
-
     </div>
-</div>
+    </div>
 
-<script src="bootstrap/bootstrap-5.0.2-dist/js/bootstrap.bundle.min.js"></script>
-<script src="fontawesome/js/all.min.js"></script>
+    <script src="../bootstrap/bootstrap-5.0.2-dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../fontawesome/js/all.min.js"></script>
 </body>
 </html>

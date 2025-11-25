@@ -1,0 +1,142 @@
+/* Font global untuk seluruh website */
+body {
+    font-family: "Times New Roman", Times, serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* Warna umum (bisa kamu ubah sesuai tema Dayak) */
+.warna1, .warna2, .warna3, .warna4 {
+    background-color: #84994F;
+}
+
+/* Banner Section */
+.banner {
+    height: 100vh; /* penuh 1 layar */
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+                url('../image/dayak-tribal-motif-vector.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+/* Judul utama */
+.banner h1 {
+    font-family: "Times New Roman", Times, serif;
+    font-size: 3.2rem;
+    font-weight: bold;
+    color: #fff;
+    text-shadow: 2px 2px 8px rgba(0,0,0,0.7); /* efek elegan */
+}
+
+/* Subjudul */
+.banner h3 {
+    font-family: "Times New Roman", Times, serif;
+    color: #f5f5f5;
+    text-shadow: 1px 1px 5px rgba(0,0,0,0.6);
+}
+
+/* Tombol cari */
+.btn-primary {
+    background-color: #84994F;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #6f8444;
+    transition: 0.3s;
+}
+
+/* Responsif di HP */
+@media (max-width: 768px) {
+    .banner h1 {
+        font-size: 2.2rem;
+    }
+    .banner h3 {
+        font-size: 1.2rem;
+    }
+    .form-control.w-50 {
+        width: 80% !important;
+    }
+}
+
+.highlighted-kategori {
+    height: 250px;
+}
+
+.kalung-kramik {
+    background : linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+                url('../image/WzpD8Lf4FDueNkFBk0Tt.jpg');
+    background-size: cover;
+    background-position: center;
+}
+
+.syal {
+    background : linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+                url('../image/GNcG8JAkdC700TmqT4ET.jpg');
+    background-size: cover;
+    background-position: center;
+}
+
+.tas-anyam {
+    background : linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+                url('../image/wN6CAOMy98apSqWcRDOR.jpg');
+    background-size: cover;
+    background-position: center;
+}
+
+.no-decoration {
+    text-decoration: none !important;
+}
+
+.kategori-text {
+    font-family: "Times New Roman", serif;
+    color: #84994F !important;
+}
+
+.image-box {
+    height: 250px;
+}
+
+.image-box img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.banner-produk {
+    height: 50vh;
+    background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), 
+                url('../image/dayak-tribal-motif-vector.jpg');
+    background-position: 50% 45%;
+    font-family: "Times New Roman", Times, serif;
+    text-shadow: 1px 1px 5px rgba(0,0,0,0.6);
+}
+
+.Produk h3 {
+    font-family: "Times New Roman", Times, serif;
+}
+
+.list-group a {
+    text-decoration: none;
+    font-family: "Times New Roman", Times, serif;
+}
+
+footer {
+    font-family: 'Times New Roman', Times, serif;
+}
+
+footer {
+    font-family: 'Times New Roman', Times, serif;
+}
+
+.carousel-item img {
+    width: 100%;
+    max-width: 500px;
+    margin: auto;
+}
